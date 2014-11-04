@@ -1,0 +1,2 @@
+serviceClass: com.agripro.gwt.client.GreetingService
+path: 11316B4A2FE058FF98E88F4D06254D7F.gwt.rpc
