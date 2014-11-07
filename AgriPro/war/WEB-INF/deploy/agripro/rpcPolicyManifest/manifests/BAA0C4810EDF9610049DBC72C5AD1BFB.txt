@@ -1,0 +1,2 @@
+serviceClass: com.agripro.gwt.client.DataService
+path: 08311916DED12FC84BCD669B756FA4DE.gwt.rpc

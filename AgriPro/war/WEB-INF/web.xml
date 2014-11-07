@@ -4,21 +4,20 @@
               http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
-
-  <!-- Servlets -->
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>com.agripro.gwt.server.GreetingServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/agripro/greet</url-pattern>
-  </servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>AgriPro.html</welcome-file>
   </welcome-file-list>
+   
+    <servlet>
+      <servlet-name>dataServiceImpl</servlet-name>
+      <servlet-class>com.agripro.gwt.server.DataServiceImpl
+      </servlet-class>
+   </servlet>
 
+   <servlet-mapping>
+      <servlet-name>dataServiceImpl</servlet-name>
+      <url-pattern>/agripro/data</url-pattern>
+   </servlet-mapping>
 </web-app>
