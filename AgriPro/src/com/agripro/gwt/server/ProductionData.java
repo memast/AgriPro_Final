@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class ProductionData implements Serializable{
 	// BEWARE: You may need to shorten the csv files because they might be too big. Do this if the App doesn't work.
 	public ArrayList dataArray = new ArrayList();
-    private String productionDataPath = "/Users/melinamast/Desktop/Datensätze/productionKopie2.csv"; // path to production.csv. Replace / with \ to get a working path.
+    private String productionDataPath = "/Users/melinamast/git/AgriPro_Final/AgriPro/data/productionKopie.csv"; // path to production.csv. Replace / with \ to get a working path.
     final int POS = 7; // POS = Position Of Seedname
     
     

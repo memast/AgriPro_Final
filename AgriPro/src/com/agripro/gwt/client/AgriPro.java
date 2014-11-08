@@ -56,7 +56,7 @@ public class AgriPro implements EntryPoint {
 		final Button evaluationPopulationButton = new Button("Bevoelkerung");
 		RootPanel.get("evaluation-button-container").add(evaluationPopulationButton);
 		
-		
+		   
 		// Add Visualization Buttons
 		final Button visualizationTableButton = new Button("Tabelle");
 		RootPanel.get("visualization-button-container").add(visualizationTableButton);
@@ -76,17 +76,24 @@ public class AgriPro implements EntryPoint {
 		   // Data is stored in activeData as ArrayList (multi-dimensional)
 		   // ATTENTION: Make your production csv smaller so it has only about 2000 lines!
 		   final FlexTable tabelle = new FlexTable();
-			
-		     
-		   for(int i = 0; i< activeData.getData().size(); i++){
+		   
+		   
+		   
+		   
+		   for(int i = 0; i< activeData.getData().size()-15; i++){
+			   	 
 				 ArrayList currentLine = (ArrayList) activeData.getData().get(i);
-				 for(int j= 0; j < currentLine.size(); j++){
+				 for(int j= 1; j < currentLine.size()-2; j++){
+					 tabelle.getColumnFormatter().setWidth(j, "6%");
+					 
 					 tabelle.setText(i, j, currentLine.get(j).toString());
+					 
+				
 				 }
 		   }	
 		   
 		   // ...and set it's column span so that it takes up the whole row.
-		    //tabelle.getFlexCellFormatter().setColSpan(1, 0, 3);
+		   
 
 
 		   RootPanel.get("result-box").add(tabelle);
