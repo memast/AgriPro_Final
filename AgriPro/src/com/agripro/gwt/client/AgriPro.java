@@ -51,19 +51,20 @@ public class AgriPro implements EntryPoint {
 	// Add Selection Buttons
 	final Button evaluationImportExportButton = new Button("Import & Export", new ClickHandler() {
 	      public void onClick(ClickEvent event) {
-	    	  Window.alert("Momentan nocht nicht verf¸gbar");
+	    	  Window.alert("Momentan nocht nicht verfügbar");
 	        }
 	      });
+	
 	RootPanel.get("evaluation-button-container").add(evaluationImportExportButton);
 	final Button evaluationProductionButton = new Button("Produktion", new ClickHandler() {
 	      public void onClick(ClickEvent event) {
-	    	  Window.alert("Standardm‰ssig ausgew‰hlt");
+	    	  Window.alert("Standardmässig ausgewählt");
 	        }
 	      });
 	RootPanel.get("evaluation-button-container").add(evaluationProductionButton);
 	final Button evaluationPopulationButton = new Button("Bevoelkerung", new ClickHandler() {
 	      public void onClick(ClickEvent event) {
-	    	  Window.alert("Momentan nocht nicht verf¸gbar");
+	    	  Window.alert("Momentan nocht nicht verfügbar");
 	        }
 	      });
 	RootPanel.get("evaluation-button-container").add(evaluationPopulationButton);
@@ -82,8 +83,13 @@ public class AgriPro implements EntryPoint {
 	        }
 	      });
 	RootPanel.get("visualization-button-container").add(visualizationMapButton);
+	
+	
 	// request production data
 	dataService.getData("production", new DataCallBack());
+	dataService.getData("population", new DataCallBack());
+    dataService.getData("trade", new DataCallBack());
+	
 	}
 	
 	 private void getUniqueSeeds(){
@@ -136,17 +142,18 @@ public class AgriPro implements EntryPoint {
 	   }
 	 
 	public void visualizeTable(){
+		
 	// Visualize as table
-	// Melina's Code goes here ;)
 	// Data is stored in activeData as ArrayList (multi-dimensional)
 	// ATTENTION: Make your production csv smaller so it has only about 2000 lines!
 	final FlexTable tabelle = new FlexTable();
+	
 	for(int i = 0; i< activeData.getData().size()-15; i++){
 	ArrayList currentLine = (ArrayList) activeData.getData().get(i);
-	for(int j= 1; j < currentLine.size()-2; j++){
-	tabelle.getColumnFormatter().setWidth(j, "6%");
-	tabelle.setText(i, j, currentLine.get(j).toString());
-	}
+		for(int j= 1; j < currentLine.size()-2; j++){
+			tabelle.getColumnFormatter().setWidth(j, "6%");
+			tabelle.setText(i, j, currentLine.get(j).toString());
+		}
 	}
 	
 	// ...and set it's column span so that it takes up the whole row.

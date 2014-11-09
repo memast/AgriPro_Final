@@ -25,33 +25,33 @@ public class DataServiceImpl extends RemoteServiceServlet
 			
 			// return data
 		return data;
-	   } else if(input.equals("population")){
+	   } else if(input.equals("trade")){
 		    /* *********************************************** TO DO *********************************************** */
-			System.out.println("entered production mode");
-			// --> production data mode
+			System.out.println("entered trade mode");
+			// --> trade data mode
 			 
 			// create data
-			ProductionData productionData = new ProductionData();
+			ImportTrade importTrade = new ImportTrade();
 			
 			// store data
 			Data data = new Data();
-			data.setData(productionData.dataArray);
+			data.setData(importTrade.dataArray);
 			System.out.println("data stored");
 			
 			// return data
 			return data;
+		 
+	   } else if(input.equals("population")){
 		    /* *********************************************** TO DO *********************************************** */
-	   } else if(input.equals("trade")){
-		    /* *********************************************** TO DO *********************************************** */
-			System.out.println("entered production mode");
-			// --> production data mode
+			System.out.println("entered population mode");
+			// --> population data mode
 			 
 			// create data
-			ProductionData productionData = new ProductionData();
+			ImportPopulation populationData = new ImportPopulation();
 			
 			// store data
 			Data data = new Data();
-			data.setData(productionData.dataArray);
+			data.setData(populationData.dataArray);
 			System.out.println("data stored");
 			
 			// return data
