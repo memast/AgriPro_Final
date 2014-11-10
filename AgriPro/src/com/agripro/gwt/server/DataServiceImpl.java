@@ -5,63 +5,65 @@ import com.agripro.gwt.client.Data;
 import com.agripro.gwt.client.DataService;
 import java.util.ArrayList;
 
-public class DataServiceImpl extends RemoteServiceServlet 
-   implements DataService{
+public class DataServiceImpl extends RemoteServiceServlet implements DataService {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+	private ImportProduction productionData;
+	private ImportTrade tradeData;
+	private ImportPopulation populationData;
 
-   public Data getData(String input) {
-	   if(input.equals("production")){
-			System.out.println("entered production mode");
-			// --> production data mode
-			 
-			// create data
-			ProductionData productionData = new ProductionData();
-			
+	public Data getData(String input) {
+		if (input.equals("production")) {
+			// production mode
+
+			// check whether we need to import data or if already imported
+			if (productionData == null) {
+				// import data
+				productionData = new ImportProduction();
+			}
+
 			// store data
 			Data data = new Data();
-			data.setData(productionData.dataArray);
-			System.out.println("data stored");
-			
-			// return data
-		return data;
-	   } else if(input.equals("trade")){
-		    /* *********************************************** TO DO *********************************************** */
-			System.out.println("entered trade mode");
-			// --> trade data mode
-			 
-			// create data
-			ImportTrade importTrade = new ImportTrade();
-			
-			// store data
-			Data data = new Data();
-			data.setData(importTrade.dataArray);
-			System.out.println("data stored");
-			
+			data.setData(productionData.getRawData());
+
 			// return data
 			return data;
-		 
-	   } else if(input.equals("population")){
-		    /* *********************************************** TO DO *********************************************** */
-			System.out.println("entered population mode");
-			// --> population data mode
-			 
-			// create data
-			ImportPopulation populationData = new ImportPopulation();
-			
+		} else if (input.equals("trade")) {
+			// trade mode
+
+			// check whether we need to import data or if already imported
+			if (tradeData == null) {
+				// import data
+				tradeData = new ImportTrade();
+			}
+
 			// store data
 			Data data = new Data();
-			data.setData(populationData.dataArray);
-			System.out.println("data stored");
-			
+			data.setData(tradeData.getRawData());
+
 			// return data
 			return data;
-		    /* *********************************************** TO DO *********************************************** */
-	   } else {
-		   // --> unknown mode
-		  System.out.println("ERROR: input must be either production, importexport, population! Your input was: "+input);
-		  Data data = new Data();
-		  return data;
-	   }
-   }   
+
+		} else if (input.equals("population")) {
+			// population mode
+
+			// check whether we need to import data or if already imported
+			if (populationData == null) {
+				// import data
+				populationData = new ImportPopulation();
+			}
+
+			// store data
+			Data data = new Data();
+			data.setData(populationData.getRawData());
+
+			// return data
+			return data;
+		} else {
+			// --> unknown mode
+			System.out.println("ERROR: input must be either 'production', 'trade' or 'population'. Your input was: '"+ input + "'.");
+			Data data = new Data();
+			return data;
+		}
+	}
 }

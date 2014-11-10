@@ -4,16 +4,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Data implements Serializable {
- 
-   private static final long serialVersionUID = 1L;
-   public Data(){};
-   ArrayList dataArray = new ArrayList();
 
-   public void setData(ArrayList dataArray) {
-      this.dataArray = dataArray;
-   }
+	private static final long serialVersionUID = 1L;
 
-   public ArrayList getData() {
-      return dataArray;
-   }
+	public Data() {
+	};
+
+	private ArrayList dataArray = new ArrayList();
+
+	public void setData(ArrayList dataArray) {
+		this.dataArray = dataArray;
+	}
+
+	public ArrayList getData() {
+		return dataArray;
+	}
 }

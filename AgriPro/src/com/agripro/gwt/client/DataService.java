@@ -5,5 +5,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("data")
 public interface DataService extends RemoteService {
-   Data getData(String input);
+	Data getData(String input);
 }

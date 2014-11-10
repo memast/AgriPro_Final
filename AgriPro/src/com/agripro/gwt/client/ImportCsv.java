@@ -1,5 +1,5 @@
 package com.agripro.gwt.client;
 
-public class ImportCsv implements Import{
+public class ImportCsv implements Import {
 
 }
