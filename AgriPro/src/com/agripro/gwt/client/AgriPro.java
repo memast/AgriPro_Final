@@ -1,5 +1,5 @@
 package com.agripro.gwt.client;
-
+//hello test
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -18,6 +18,8 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 
 import java.util.Iterator;
 import java.util.List;
@@ -64,7 +66,7 @@ public class AgriPro implements EntryPoint {
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
 						RootPanel.get("result-box").clear();
-						visualizeTable();
+						visualizeTable("Wheat");
 					}
 				});
 		RootPanel.get("visualization-button-container").add(visualizationTableButton);
@@ -92,7 +94,7 @@ public class AgriPro implements EntryPoint {
 	private void getUniqueSeeds() {
 		// gets all unique Seeds
 		ArrayList allSeeds = activeData.getData();
-		ArrayList<String> uniqueSeeds = new ArrayList<String>();
+		final ArrayList<String> uniqueSeeds = new ArrayList<String>();
 
 		// loop through all seeds
 		// // add to an array if not in array
@@ -109,13 +111,13 @@ public class AgriPro implements EntryPoint {
 		// Make a new list box, adding a few items to it.
 
 		// boolean isMultipleSelect = true;
-		ListBox lb = new ListBox();
+		final ListBox lb = new ListBox();
 		String currentSeed;
 
 		// loops through all the items in uniqueSeeds and adds it to the ListBox
 		for (String temp : uniqueSeeds) {
 			if (!temp.equals("ItemName")) {
-				lb.addItem(temp);
+				lb.addItem(temp, temp);
 			}
 		}
 
@@ -128,19 +130,43 @@ public class AgriPro implements EntryPoint {
 
 		System.out.println("Unique Seeds: "+uniqueSeeds.toString());
 		System.out.println("Amount of unique seeds: "+uniqueSeeds.size());
+		
+		lb.addChangeHandler(new ChangeHandler() {
+				 
+				         
+				    public void onChange(ChangeEvent event) {
+				 
+				    // Get the index of the selected Item
+				 
+				    int item = lb.getSelectedIndex();
+				    //String value = lb.getValue(item).toString();
+				    System.out.println(item);
+				    System.out.println(uniqueSeeds.get(item + 1));
+				    RootPanel.get("result-box").clear();
+				    visualizeTable(uniqueSeeds.get(item + 1));
+				    }
+		});
+				            
+				            
 
 	}
 
-	public void visualizeTable() {
+	public void visualizeTable(String selectedSeed) {
 		// This method is extremely slow. Fix?
 		// Visualize as table
 		final FlexTable tabelle = new FlexTable();
+		
+		String seed = selectedSeed;
 
 		for (int i = 0; i < activeData.getData().size() - 15; i++) {
 			ArrayList currentLine = (ArrayList) activeData.getData().get(i);
 			for (int j = 1; j < currentLine.size() - 2; j++) {
-				tabelle.getColumnFormatter().setWidth(j, "6%");
-				tabelle.setText(i, j, currentLine.get(j).toString());
+				//System.out.println(currentLine.get(7).toString());
+					tabelle.getColumnFormatter().setWidth(j, "6%");
+				if (currentLine.get(7).toString().equals(selectedSeed)){
+					tabelle.setText(i, j, currentLine.get(j).toString());
+				}
+				
 			}
 		}
 
@@ -167,7 +193,7 @@ public class AgriPro implements EntryPoint {
 			activeData = result;
 			// Let's visualize our table straight away
 			getUniqueSeeds();
-			visualizeTable();
+			visualizeTable("Wheat");
 		}
 	}
 }
