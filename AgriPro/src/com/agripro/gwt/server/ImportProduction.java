@@ -11,7 +11,7 @@ public class ImportProduction implements Serializable {
 	// BEWARE: You may need to shorten the csv files because they might be too
 	// big. Do this if the App doesn't work.
 	private ArrayList dataArray = new ArrayList();
-	private String importProductionPath = "/Users/melinamast/Documents/AgriPro/AgriPro/ressource/productionKopie.csv";
+	private String importProductionPath = "/Users/melinamast/Documents/AgriPro/Copy of AgriPro/ressource/productionKopie.csv";
 	final int POS = 7; // POS = Position Of Seedname
 
 	public ImportProduction() {

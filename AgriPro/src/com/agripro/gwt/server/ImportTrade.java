@@ -11,7 +11,7 @@ public class ImportTrade implements Serializable {
 	// BEWARE: You may need to shorten the csv files because they might be too
 	// big. Do this if the App doesn't work.
 	private ArrayList dataArray = new ArrayList();
-	private String importTradePath = "/Users/melinamast/Documents/AgriPro/AgriPro/ressource/tradeKopie.csv";
+	private String importTradePath = "/Users/melinamast/Documents/AgriPro/Copy of AgriPro/ressource/tradeKopie.csv";
 
 	public ImportTrade() {
 		Scanner scanIn = null;

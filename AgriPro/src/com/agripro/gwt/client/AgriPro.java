@@ -31,7 +31,19 @@ import com.google.gwt.core.client.JsonUtils;
 public class AgriPro extends DataTableVisualisation implements EntryPoint {
 	private Data activeData;
 	private static final String SERVER_ERROR = "An error occurred while attempting to contact the server. Please check your network connection and try again.";
-	private String mode;
+	private static String mode;
+	
+
+	public static String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+
+
 	private boolean evaluationSeedSet = false;
 	private boolean seedIsInvisible = false;
 	
@@ -46,6 +58,7 @@ public class AgriPro extends DataTableVisualisation implements EntryPoint {
 				"Handel", new ClickHandler() {
 					public void onClick(ClickEvent event) {
 						mode = "trade";	
+						setMode("trade");
 					    RootPanel.get("result-box").clear();
 						dataService.getData("trade", new DataCallBack());
 						
@@ -57,6 +70,7 @@ public class AgriPro extends DataTableVisualisation implements EntryPoint {
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
 						mode = "production";
+						setMode("production");
 					    RootPanel.get("result-box").clear();
 						dataService.getData("production", new DataCallBack());
 						
@@ -67,6 +81,7 @@ public class AgriPro extends DataTableVisualisation implements EntryPoint {
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
 						mode = "population";
+						setMode("population");
 						RootPanel.get("result-box").clear();
 						dataService.getData("population", new DataCallBack());
 						
@@ -93,13 +108,10 @@ public class AgriPro extends DataTableVisualisation implements EntryPoint {
 				});
 		RootPanel.get("visualization-button-container").add(visualizationMapButton);
 		// *********************** HTML FORMED *********************** //
-
-
 		
 	}
 	
-	
-	
+		
 	// display card
 	private void visualizeCard() {
 		HTML html = new HTML("Hier wird in Zukunft eine Kartendarstellung sichtbar sein");
@@ -180,6 +192,8 @@ public class AgriPro extends DataTableVisualisation implements EntryPoint {
 		
 		return uniqueSeeds;
 	}
+	
+	
 
 	private class DataCallBack implements AsyncCallback<Data> {
 		@Override
@@ -206,10 +220,11 @@ public class AgriPro extends DataTableVisualisation implements EntryPoint {
 				seedIsInvisible = true;
 				visualizeTable("Population - Est. & Proj.", activeData);
 				
-				
-			
+					
 				
 			}
+			
 		}
 	}
+	
 }
