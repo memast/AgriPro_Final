@@ -7,9 +7,15 @@ import javax.xml.bind.Binder;
 
 
 
+
+
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -24,11 +30,16 @@ public class DataTableVisualisation {
 		// Visualize as table
 		final ScrollPanel scrollPanel = new ScrollPanel();		
 		final FlexTable tabelle = new FlexTable();
+	
+		final DockLayoutPanel dock = new DockLayoutPanel(Unit.EM); 
+		final FlowPanel header = new FlowPanel(); 
+		
 		
 		//sets the column span so that it takes up the whole row
 		tabelle.setWidth("100%");
 		scrollPanel.add(tabelle);
-		scrollPanel.setSize("10", "5");
+		scrollPanel.setSize("300", "200");
+		dock.add(tabelle);
 		
 		
 		//checks wich mode is selected 
@@ -36,10 +47,10 @@ public class DataTableVisualisation {
 			System.out.println("right");
 //			fills header
 			for(int i= 0; i<1; i++){
-				ArrayList header = (ArrayList) activeData.getData().get(i);
-				for (int j = 0; j < header.size() - 2; j++) {
+				ArrayList header1 = (ArrayList) activeData.getData().get(i);
+				for (int j = 0; j < header1.size() - 2; j++) {
 					tabelle.getColumnFormatter().setWidth(j, "6%");
-					tabelle.setText(i, j, header.get(j).toString());
+					tabelle.setText(i, j, header1.get(j).toString());
 				}
 			}				
 				
@@ -61,10 +72,10 @@ public class DataTableVisualisation {
 		else if(AgriPro.getMode() == "production"){
 			//fills header
 			for(int i= 0; i<1; i++){
-				ArrayList header = (ArrayList) activeData.getData().get(i);
-				for (int j = 0; j < header.size() - 2; j++) {
+				ArrayList header1 = (ArrayList) activeData.getData().get(i);
+				for (int j = 0; j < header1.size() - 2; j++) {
 					tabelle.getColumnFormatter().setWidth(j, "6%");
-					tabelle.setText(i, j, header.get(j).toString());
+					tabelle.setText(i, j, header1.get(j).toString());
 				}
 			}				
 			for (int i = 1; i < activeData.getData().size(); i++) {
@@ -84,10 +95,10 @@ public class DataTableVisualisation {
 		else if(AgriPro.getMode() == "population"){
 			//fills header
 			for(int i= 0; i<1; i++){
-				ArrayList header = (ArrayList) activeData.getData().get(i);
-				for (int j = 0; j < header.size() - 2; j++) {
+				ArrayList header1 = (ArrayList) activeData.getData().get(i);
+				for (int j = 0; j < header1.size() - 2; j++) {
 					tabelle.getColumnFormatter().setWidth(j, "6%");
-					tabelle.setText(i, j, header.get(j).toString());
+					tabelle.setText(i, j, header1.get(j).toString());
 				}
 			}
 			for (int i = 1; i < activeData.getData().size() - 15; i++) {
@@ -103,9 +114,8 @@ public class DataTableVisualisation {
 				}
 			
 		}
-		
-
-		RootPanel.get("result-box").add(scrollPanel);
+		  
+	    RootPanel.get("result-box").add(tabelle); 
 	}
 	
 
