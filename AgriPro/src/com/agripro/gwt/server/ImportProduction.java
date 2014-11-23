@@ -11,16 +11,12 @@ public class ImportProduction implements Serializable {
 	// BEWARE: You may need to shorten the csv files because they might be too
 	// big. Do this if the App doesn't work.
 	private ArrayList dataArray = new ArrayList();
-	private String importProductionPath = "C:/Users/Manuel/Dropbox/UZH/Software Engineering/Übung/Uebung2_Ausgabe/Datensaetze 1990-2011/production.csv";
+	private String importProductionPath = "/Users/melinamast/Documents/AgriPro/AgriPro/ressource/productionKopie.csv";
 	final int POS = 7; // POS = Position Of Seedname
 
-	ImportProduction() {
+	public ImportProduction() {
 		Scanner scanIn = null;
-		int numberOfLines = 0;
 		String InputLine = "";
-		double xnum = 0;
-		String xfileLocation;
-		String result = "";
 
 		System.out.println("\n ****LOADING... " + importProductionPath + "****");
 		try {

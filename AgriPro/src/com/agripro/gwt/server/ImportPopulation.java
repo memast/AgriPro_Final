@@ -11,15 +11,11 @@ public class ImportPopulation implements Serializable {
 	// BEWARE: You may need to shorten the csv files because they might be too
 	// big. Do this if the App doesn't work.
 	private ArrayList dataArray = new ArrayList();
-	private String importPopulationPath = "C:/Users/Manuel/Dropbox/UZH/Software Engineering/Übung/Uebung2_Ausgabe/Datensaetze 1990-2011/population.csv";
+	private String importPopulationPath = "/Users/melinamast/Documents/AgriPro/AgriPro/ressource/populationKopie.csv";
 
-	ImportPopulation() {
+	public ImportPopulation() {
 		Scanner scanIn = null;
-		int numberOfLines = 0;
 		String InputLine = "";
-		double xnum = 0;
-		String xfileLocation;
-		String result = "";
 
 		System.out.println("\n ****LOADING... " + importPopulationPath + "****");
 		try {
@@ -27,7 +23,7 @@ public class ImportPopulation implements Serializable {
 
 			while (scanIn.hasNextLine()) {
 				InputLine = scanIn.nextLine();
-				ArrayList tmpArray = new ArrayList(Arrays.asList(InputLine.replaceAll("^\"", "").split("\"?(,|$)(?=(([^\"]*\"){2})*[^\"]*$) *\"?")));
+				ArrayList tmpArray = new ArrayList(Arrays.asList(InputLine.replaceAll("\"", "").split("\"?(,|$)(?=(([^\"]*\"){2})*[^\"]*$) *\"?")));
 				dataArray.add(tmpArray);
 			}
 		} catch (Exception e) {
@@ -35,6 +31,7 @@ public class ImportPopulation implements Serializable {
 			System.out.println(e);
 		}
 		System.out.println("\n ****LOADED: " + importPopulationPath + "****");
+	
 
 	}
 

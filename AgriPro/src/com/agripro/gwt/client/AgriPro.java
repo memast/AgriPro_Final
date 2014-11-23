@@ -1,5 +1,5 @@
 package com.agripro.gwt.client;
-//hello test
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -28,10 +28,14 @@ import java.util.ArrayList;
 
 import com.google.gwt.core.client.JsonUtils;
 
-public class AgriPro implements EntryPoint {
+public class AgriPro extends DataTableVisualisation implements EntryPoint {
 	private Data activeData;
 	private static final String SERVER_ERROR = "An error occurred while attempting to contact the server. Please check your network connection and try again.";
-
+	private String mode;
+	private boolean evaluationSeedSet = false;
+	private boolean seedIsInvisible = false;
+	
+	
 	// create data service
 	private final DataServiceAsync dataService = GWT.create(DataService.class);
 
@@ -39,9 +43,12 @@ public class AgriPro implements EntryPoint {
 		// *********************** FORM HTML *********************** //
 		// Add Selection Buttons
 		final Button evaluationImportExportButton = new Button(
-				"Import & Export", new ClickHandler() {
+				"Handel", new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						Window.alert("Momentan nocht nicht verfuegbar");
+						mode = "trade";	
+					    RootPanel.get("result-box").clear();
+						dataService.getData("trade", new DataCallBack());
+						
 					}
 				});
 
@@ -49,14 +56,20 @@ public class AgriPro implements EntryPoint {
 		final Button evaluationProductionButton = new Button("Produktion",
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						Window.alert("Standardmaessig ausgewaehlt");
+						mode = "production";
+					    RootPanel.get("result-box").clear();
+						dataService.getData("production", new DataCallBack());
+						
 					}
 				});
 		RootPanel.get("evaluation-button-container").add(evaluationProductionButton);
 		final Button evaluationPopulationButton = new Button("Bevoelkerung",
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						Window.alert("Momentan nocht nicht verfuegbar");
+						mode = "population";
+						RootPanel.get("result-box").clear();
+						dataService.getData("population", new DataCallBack());
+						
 					}
 				});
 		RootPanel.get("evaluation-button-container").add(evaluationPopulationButton);
@@ -66,10 +79,11 @@ public class AgriPro implements EntryPoint {
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
 						RootPanel.get("result-box").clear();
-						visualizeTable("Wheat");
+						visualizeTable("Wheat", activeData);
 					}
 				});
 		RootPanel.get("visualization-button-container").add(visualizationTableButton);
+		
 		final Button visualizationMapButton = new Button("Karte",
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
@@ -80,33 +94,24 @@ public class AgriPro implements EntryPoint {
 		RootPanel.get("visualization-button-container").add(visualizationMapButton);
 		// *********************** HTML FORMED *********************** //
 
-		// request production data
-		dataService.getData("production", new DataCallBack());
 
-		// not needed yet. uncommenting the next line only increases the loading
-		// time.
-		// dataService.getData("population", new DataCallBack());
-		// not needed yet. uncommenting the next line only increases the loading
-		// time.
-		// dataService.getData("trade", new DataCallBack());
+		
 	}
-
+	
+	
+	
+	// display card
+	private void visualizeCard() {
+		HTML html = new HTML("Hier wird in Zukunft eine Kartendarstellung sichtbar sein");
+		RootPanel.get("result-box").add(html);
+	}
+	
+	/// get unqiue seeds for list
 	private void getUniqueSeeds() {
 		// gets all unique Seeds
-		ArrayList allSeeds = activeData.getData();
-		final ArrayList<String> uniqueSeeds = new ArrayList<String>();
-
-		// loop through all seeds
-		// // add to an array if not in array
-		for (int i = 0; i < allSeeds.size(); i++) {
-			ArrayList currentLine = (ArrayList) allSeeds.get(i);
-			if (currentLine.size() > 8) {
-				String seed = currentLine.get(7).toString();
-				if (!uniqueSeeds.contains(seed)) {
-					uniqueSeeds.add(seed);
-				}
-			}
-		}
+		final ArrayList<String> uniqueSeeds = createUniqueSeed();
+		
+		System.out.println(uniqueSeeds.get(1));
 
 		// Make a new list box, adding a few items to it.
 
@@ -126,7 +131,11 @@ public class AgriPro implements EntryPoint {
 		lb.setVisibleItemCount(1);
 
 		// Add it to the root panel.
-		RootPanel.get("evaluation-seed-container").add(lb);
+		if(evaluationSeedSet == false){
+			RootPanel.get("evaluation-seed-container").add(lb);
+			evaluationSeedSet = true;
+		}
+		
 
 		System.out.println("Unique Seeds: "+uniqueSeeds.toString());
 		System.out.println("Amount of unique seeds: "+uniqueSeeds.size());
@@ -143,7 +152,7 @@ public class AgriPro implements EntryPoint {
 				    System.out.println(item);
 				    System.out.println(uniqueSeeds.get(item + 1));
 				    RootPanel.get("result-box").clear();
-				    visualizeTable(uniqueSeeds.get(item + 1));
+				    visualizeTable(uniqueSeeds.get(item + 1), activeData);
 				    }
 		});
 				            
@@ -151,32 +160,25 @@ public class AgriPro implements EntryPoint {
 
 	}
 
-	public void visualizeTable(String selectedSeed) {
-		// This method is extremely slow. Fix?
-		// Visualize as table
-		final FlexTable tabelle = new FlexTable();
-		
-		String seed = selectedSeed;
 
-		for (int i = 0; i < activeData.getData().size() - 15; i++) {
-			ArrayList currentLine = (ArrayList) activeData.getData().get(i);
-			for (int j = 1; j < currentLine.size() - 2; j++) {
-				//System.out.println(currentLine.get(7).toString());
-					tabelle.getColumnFormatter().setWidth(j, "6%");
-				if (currentLine.get(7).toString().equals(selectedSeed)){
-					tabelle.setText(i, j, currentLine.get(j).toString());
+
+	public ArrayList<String> createUniqueSeed() {
+		ArrayList allSeeds = activeData.getData();
+		final ArrayList<String> uniqueSeeds = new ArrayList<String>();
+
+		// loop through all seeds
+		// // add to an array if not in array
+		for (int i = 0; i < allSeeds.size(); i++) {
+			ArrayList currentLine = (ArrayList) allSeeds.get(i);
+			if (currentLine.size() > 8) {
+				String seed = currentLine.get(7).toString();
+				if (!uniqueSeeds.contains(seed)) {
+					uniqueSeeds.add(seed);
 				}
-				
 			}
 		}
-
-		// ...and set it's column span so that it takes up the whole row.
-		RootPanel.get("result-box").add(tabelle);
-	}
-
-	private void visualizeCard() {
-		HTML html = new HTML("Hier wird in Zukunft eine Kartendarstellung sichtbar sein");
-		RootPanel.get("result-box").add(html);
+		
+		return uniqueSeeds;
 	}
 
 	private class DataCallBack implements AsyncCallback<Data> {
@@ -192,8 +194,22 @@ public class AgriPro implements EntryPoint {
 			System.out.println("Received data from the server.");
 			activeData = result;
 			// Let's visualize our table straight away
-			getUniqueSeeds();
-			visualizeTable("Wheat");
+			
+			if(mode == "production" | mode == "trade"){
+				if(seedIsInvisible == true){
+					RootPanel.get("super-seed-container").removeStyleName("invisible");}
+				getUniqueSeeds();
+				visualizeTable("Wheat", activeData);
+			}
+			else if(mode == "population"){
+				RootPanel.get("super-seed-container").setStyleName("invisible");
+				seedIsInvisible = true;
+				visualizeTable("Population - Est. & Proj.", activeData);
+				
+				
+			
+				
+			}
 		}
 	}
 }

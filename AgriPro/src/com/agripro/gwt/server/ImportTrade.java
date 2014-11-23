@@ -11,15 +11,11 @@ public class ImportTrade implements Serializable {
 	// BEWARE: You may need to shorten the csv files because they might be too
 	// big. Do this if the App doesn't work.
 	private ArrayList dataArray = new ArrayList();
-	private String importTradePath = "C:/Users/Manuel/Dropbox/UZH/Software Engineering/Übung/Uebung2_Ausgabe/Datensaetze 1990-2011/trade.csv";
+	private String importTradePath = "/Users/melinamast/Documents/AgriPro/AgriPro/ressource/tradeKopie.csv";
 
-	ImportTrade() {
+	public ImportTrade() {
 		Scanner scanIn = null;
-		int numberOfLines = 0;
 		String InputLine = "";
-		double xnum = 0;
-		String xfileLocation;
-		String result = "";
 
 		System.out.println("\n ****LOADING... " + importTradePath + "****");
 		try {
