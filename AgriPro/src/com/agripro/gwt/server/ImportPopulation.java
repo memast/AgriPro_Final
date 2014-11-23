@@ -11,7 +11,7 @@ public class ImportPopulation implements Serializable {
 	// BEWARE: You may need to shorten the csv files because they might be too
 	// big. Do this if the App doesn't work.
 	private ArrayList dataArray = new ArrayList();
-	private String importPopulationPath = "/Users/melinamast/Documents/AgriPro/Copy of AgriPro/ressource/populationKopie.csv";
+	private String importPopulationPath = "data/population.csv";
 
 	public ImportPopulation() {
 		Scanner scanIn = null;

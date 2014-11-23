@@ -80,6 +80,7 @@ public class DataTableVisualisation {
 			}				
 			for (int i = 1; i < activeData.getData().size(); i++) {
 				ArrayList currentLine = (ArrayList) activeData.getData().get(i);
+				if(currentLine.size()>7){ // !! Anmerkung Manuel: wird benötigt wenn man die standardmässige .csv Datei braucht!
 					if (currentLine.get(7).toString().equals(selectedSeed)){
 						// add the line to our table
 						for (int j = 0; j < currentLine.size() - 2; j++) {
@@ -89,6 +90,7 @@ public class DataTableVisualisation {
 						}
 					}
 				}
+			}
 			
 		}
 		

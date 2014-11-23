@@ -31,15 +31,16 @@ import com.google.gwt.core.client.JsonUtils;
 public class AgriPro extends DataTableVisualisation implements EntryPoint {
 	private Data activeData;
 	private static final String SERVER_ERROR = "An error occurred while attempting to contact the server. Please check your network connection and try again.";
-	private static String mode;
+	private static String dataMode;
 	
 
 	public static String getMode() {
-		return mode;
+		return dataMode;
 	}
 
-	public void setMode(String mode) {
-		this.mode = mode;
+	public void setMode(String dataMode) {
+		debug(dataMode + " requesting data...");		
+		this.dataMode = dataMode;
 	}
 
 
@@ -52,12 +53,15 @@ public class AgriPro extends DataTableVisualisation implements EntryPoint {
 	private final DataServiceAsync dataService = GWT.create(DataService.class);
 
 	public void onModuleLoad() {
+		// DEBUG
+		debug("Started");
+		
+		
 		// *********************** FORM HTML *********************** //
 		// Add Selection Buttons
 		final Button evaluationImportExportButton = new Button(
 				"Handel", new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						mode = "trade";	
 						setMode("trade");
 					    RootPanel.get("result-box").clear();
 						dataService.getData("trade", new DataCallBack());
@@ -69,7 +73,6 @@ public class AgriPro extends DataTableVisualisation implements EntryPoint {
 		final Button evaluationProductionButton = new Button("Produktion",
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						mode = "production";
 						setMode("production");
 					    RootPanel.get("result-box").clear();
 						dataService.getData("production", new DataCallBack());
@@ -80,7 +83,6 @@ public class AgriPro extends DataTableVisualisation implements EntryPoint {
 		final Button evaluationPopulationButton = new Button("Bevoelkerung",
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						mode = "population";
 						setMode("population");
 						RootPanel.get("result-box").clear();
 						dataService.getData("population", new DataCallBack());
@@ -199,32 +201,42 @@ public class AgriPro extends DataTableVisualisation implements EntryPoint {
 		@Override
 		public void onFailure(Throwable caught) {
 			/* server side error occured */
-			System.out.println("Unable to obtain server response: " + caught.getMessage());
+			debug("DataCallBackError: "+caught.getMessage());
 		}
 
 		@Override
 		public void onSuccess(Data result) {
+			debug(dataMode + " DataCallBack Success");
 			// We received data
-			System.out.println("Received data from the server.");
 			activeData = result;
 			// Let's visualize our table straight away
 			
-			if(mode == "production" | mode == "trade"){
+			if(dataMode == "production" | dataMode == "trade"){
+				debug("1");
 				if(seedIsInvisible == true){
-					RootPanel.get("super-seed-container").removeStyleName("invisible");}
+					debug("2");
+					RootPanel.get("super-seed-container").removeStyleName("invisible");
+				}
+				debug("3");
 				getUniqueSeeds();
+				debug("4");
 				visualizeTable("Wheat", activeData);
+				debug("5");
 			}
-			else if(mode == "population"){
+			else if(dataMode == "population"){
 				RootPanel.get("super-seed-container").setStyleName("invisible");
 				seedIsInvisible = true;
 				visualizeTable("Population - Est. & Proj.", activeData);
-				
-					
-				
 			}
-			
+			debug(dataMode + " data Visualized");			
 		}
+	}
+	
+	
+	
+	public void debug(String input){
+		HTML html = new HTML(input + "<br />");
+		RootPanel.get("debug").add(html);
 	}
 	
 }
