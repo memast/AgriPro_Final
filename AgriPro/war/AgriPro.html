@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>Web Application Starter Project</title>
+  <title>AgriPro 2.0</title>
   <script type="text/javascript" language="javascript" src="agripro/agripro.nocache.js"></script>
   <link type="text/css" rel="stylesheet" href="AgriPro.css">
 </head>
@@ -38,7 +38,7 @@
 
 <div id="content-container">
 
-	<div id="debug" class="box"></div>
+	<div id="debug" class="box"><div id="debug-hide"></div></div>
 
 	<div id="selection-container" class="box">
 		<h2>Auswahl</h2>
@@ -51,24 +51,25 @@
 		<br clear="all" />
 		<hr />
 		<br clear="all" />
-		<div id="super-seed-container">
-			<div class="selection-left">Saatgut</div>
-			<div class="selection-right" id="evaluation-seed-container"></div>
-			<div class="selection-leftcomment" <p>Wählen Sie für Handel oder Produktion die gewünschten Saatgüter aus</p></div>
-			<br clear="all" />
-			<hr />
-			<br clear="all" />
-		</div>
 
 		<div class="selection-left">Jahr</div>
-		<div class="selection-right" id="mytest">Placeholder</div>
+		<div class="selection-right" id="evaluation-years-container"></div>
+		
 		<br clear="all" />
 		<hr />
 		<br clear="all" />
-		<div class="selection-left">Land</div>
-		<div class="selection-right" id="evaluation-land-container">Placeholder</div>
-		<br clear="all" />
 		
+		<div class="selection-left">Land</div>
+		<div class="selection-right" id="evaluation-countries-container"></div>
+	
+		<div id="super-seed-container">
+			<br clear="all" />
+			<hr />
+			<br clear="all" />
+			<div class="selection-left">Saatgut</div>
+			<div class="selection-right" id="evaluation-seeds-container"></div>
+		</div>
+		<br clear="all" />
 
 	</div>
 	<div id="visualization-container" class="box">
@@ -79,13 +80,13 @@
 	
 	
 	<div id="result-container" class="box">
-		<h2 id="result-title">Visualisierung</h2>
+		<h2 id="result-title"></h2>
 		<div style="overflow: auto;height: 300px">
-
-		<div id="result-box">
-		
-			<!-- results (either a table or map visualization) go in here -->
+			<div id="result-box">
 			
+				<!-- results (either a table or map visualization) go in here -->
+				
+			</div>
 		</div>
 		<br clear="all" />
 	</div>

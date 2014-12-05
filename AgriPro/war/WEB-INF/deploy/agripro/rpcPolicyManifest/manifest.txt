@@ -1,3 +1,3 @@
 # Module agripro
 # RPC service class, partial path of RPC policy file
-com.agripro.gwt.client.DataService, 4BDF77447EDFAE574B0A12B189CF16B9.gwt.rpc
+com.agripro.gwt.client.DataService, 3DF05BAD8C3DC3C52D961D19BAD1A8D6.gwt.rpc
