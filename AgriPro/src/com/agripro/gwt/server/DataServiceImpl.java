@@ -51,9 +51,9 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 			data.setData(metaProductionData.getRawData());
 			return data;			
 		}
-		if(selection.equals("trade")){
+		if(selection.equals("import")||selection.equals("export")){
 			// meta: trade
-			metaTradeData = new metaImportTrade(year, country);
+			metaTradeData = new metaImportTrade(selection, year, country);
 
 			// store data
 			data.setData(metaTradeData.getRawData());
@@ -93,9 +93,9 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 			data.setData(productionData.getRawData());
 			return data;
 		}
-		if (selection.equals("trade")) {
+		if (selection.equals("import")||selection.equals("export")) {
 			// trade mode
-			tradeData = new ImportTrade(year, country, seed);
+			tradeData = new ImportTrade(selection, year, country, seed);
 			data.setData(tradeData.getRawData());
 			return data;
 		}	

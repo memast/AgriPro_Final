@@ -2,8 +2,12 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>AgriPro 2.0</title>
+  <title>AgriPro</title>
   <script type="text/javascript" language="javascript" src="agripro/agripro.nocache.js"></script>
+  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript">
+      google.load("visualization", "1", {packages:["geomap"]});
+	</script>
   <link type="text/css" rel="stylesheet" href="AgriPro.css">
 </head>
 <body>
@@ -11,26 +15,19 @@
 <!-- OPTIONAL: include this if you want history support -->
 <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
 
-<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
-<noscript>
-  <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
-    Your web browser must have JavaScript enabled
-    in order for this application to display correctly.
-  </div>
-</noscript>
 
 <!-- HTML Content -->
 <div id="header-container"><div id="header">
 
 	<div class="fll">
-		<a href="">AgriPro</a>
+		<a href="/">AgriPro</a>
 	</div>
 	
 	<div class="flr">
-		<a href="" class="active">Analyse</a>
-		<a href="">Hilfe</a>
-		<a href="">Über diese App</a>
-		<a href="">Impressum</a>
+		<a href="/" class="active">Analyse</a>
+		<a href="/help.html">Hilfe</a>
+		<a href="/about.html">Über diese App</a>
+		<a href="/impressum.html">Impressum</a>
 	</div>
 </div></div>
 
@@ -38,15 +35,28 @@
 
 <div id="content-container">
 
-	<div id="debug" class="box"><div id="debug-hide"></div></div>
+	<noscript>
+	  <div id="javascript-required-box" class="box">
+	  <br />
+	  Your web browser must have JavaScript enabled in order for this application to display correctly.
+	  <br />
+	  </div>
+	</noscript>
+
+	<div id="debug" class="box" style="display: none;"><div id="debug-hide"></div></div>
 
 	<div id="selection-container" class="box">
 		<h2>Auswahl</h2>
-		<div class="selection-leftcomment" <p>Wählen Sie die gewünschten Daten aus</p></div>
+		<div class="selection-leftcomment">Wählen Sie die gewünschten Daten aus.</div>
 		<hr />
 		<br clear="all" />
 		<div class="selection-left">Auswertung</div>
-		<div class="selection-right" id="evaluation-button-container"></div>
+		<div class="selection-right" id="evaluation-button-container">
+			<span id="evaluation-button-production-container"></span>
+			<span id="evaluation-button-import-container"></span>
+			<span id="evaluation-button-export-container"></span>
+			<span id="evaluation-button-population-container"></span>
+		</div>
 
 		<br clear="all" />
 		<hr />
@@ -74,29 +84,34 @@
 	</div>
 	<div id="visualization-container" class="box">
 		<h2>Darstellung</h2>
-		<div class="flr" id="visualization-button-container"></div>
+		<div class="flr" id="visualization-button-container">
+			<span id="visualization-button-table-container"></span>
+			<span id="visualization-button-map-container"></span>
+		</div>
 		<br clear="all" />
 	</div>
 	
 	
 	<div id="result-container" class="box">
 		<h2 id="result-title"></h2>
-		<div style="overflow: auto;height: 300px">
+		<!--<div style="overflow: auto; height: 300px">-->
 			<div id="result-box">
 			
 				<!-- results (either a table or map visualization) go in here -->
 				
 			</div>
-		</div>
+		<!--</div>-->
 		<br clear="all" />
 	</div>
 	
 	<div id="footer-container">
-		<div class="box first"><h3>Speichern</h3><div class="flr"><a href="">bookmark</a></div></div>
-		<div class="box middle"><h3>Exportieren</h3><div class="flr"><a href="">.jpg</a><span class="sep">|</span><a href="">.png</a><span class="sep">|</span><a href="">.xls</a></div></div>
-		<div class="box last"><h3>Datenquelle</h3><div class="flr" style="font-size: 10px;">© FAO. 2014. FAOSTAT. data.fao.org. <br />(Accessed 1.9.2014)
-The FAO's endorsement of views portrayed on this website is not stated or implied in any way.</div></div>
+		<div class="box bookmark"><h3>Speichern</h3><div class="flr"><span id="bookmark-container"></span></div></div>
+		<div class="box source"><h3>Datenquelle</h3><div class="flr">© FAO. 2014. FAOSTAT. data.fao.org. (Accessed 1.9.2014)</div></div>
+		<br clear="all" />
 	</div>
+	
+	
+	<div id="ads" class="box"><br /><center style="font-style: italic;">Hier koennte Ihre Werbung stehen.</center><br /></div>
 
 </div>
 

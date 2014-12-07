@@ -25,10 +25,12 @@ public class metaImportProduction implements Serializable {
 				while (rs.next()) {	
 					// loop through results
 					if(rs.getString(1)==null){continue;}
+					if(Integer.parseInt(rs.getString(1))==0){continue;}
 					dataArray.add(rs.getString(1));				
 				}
 			}
 			if(year!=null&&country==null){
+				dataArray.add("Global");
 				rs = conn.createStatement().executeQuery("SELECT DISTINCT AreaName FROM production WHERE YEAR = '"+year+"' ORDER BY AreaName ASC");
 				while (rs.next()) {	
 					// loop through results
@@ -37,7 +39,11 @@ public class metaImportProduction implements Serializable {
 				}
 			}
 			if(year!=null&&country!=null){
-				rs = conn.createStatement().executeQuery("SELECT DISTINCT ItemName FROM production WHERE YEAR = '"+year+"' AND AreaName= '"+country+"' ORDER BY Itemname ASC");
+				if(country.equals("Global")){
+					rs = conn.createStatement().executeQuery("SELECT DISTINCT ItemName FROM production WHERE YEAR = '"+year+"' ORDER BY Itemname ASC");			
+				} else {
+					rs = conn.createStatement().executeQuery("SELECT DISTINCT ItemName FROM production WHERE YEAR = '"+year+"' AND AreaName= '"+country+"' ORDER BY Itemname ASC");
+				}
 				while (rs.next()) {	
 					// loop through results
 					if(rs.getString(1)==null){continue;}

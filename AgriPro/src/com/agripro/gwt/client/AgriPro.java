@@ -2,6 +2,7 @@ package com.agripro.gwt.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -29,6 +30,10 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.JsonUtils;
+import com.google.gwt.user.client.ui.*;
+
+
+
 
 public class AgriPro extends Visualisation implements EntryPoint {
 	///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +47,11 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	private String activeYear;
 	private String activeCountry;
 	private String activeSeed;
+	private String activeVisualization = "table"; // standard visualization is set to table
+
+	private String overrideYear = null;
+	private String overrideCountry = null;
+	private String overrideSeed = null;
 	
 	public String getActiveSelection() { return activeSelection; }
 	public String getActiveYear() { return activeYear; }
@@ -69,57 +79,95 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	ListBox yearLb = new ListBox();
 	ListBox countryLb = new ListBox();
 	ListBox seedLb = new ListBox();
+
+	Button evaluationProductionButton;
+	Button evaluationImportButton;
+	Button evaluationExportButton;
+	Button evaluationPopulationButton;
 	
+	Hyperlink bookmark;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// START
 	public void onModuleLoad() {
 		debug("Started");
-		
+				
 		// request standard selection: production
-		metaRequest("year");
+		//metaRequest("year");
+		//test();
 		
 		// *********************** FORM HTML *********************** //
 		// Add Selection Buttons
-		final Button evaluationImportExportButton = new Button(
-				"Handel", new ClickHandler() {
+		evaluationProductionButton = new Button("Produktion",
+				new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						setSelection("trade");
+						setSelection("production");	
+						RootPanel.get("evaluation-button-production-container").addStyleName("active");
+						RootPanel.get("evaluation-button-import-container").removeStyleName("active");
+						RootPanel.get("evaluation-button-export-container").removeStyleName("active");
+						RootPanel.get("evaluation-button-population-container").removeStyleName("active");
 					}
 				});
+		RootPanel.get("evaluation-button-production-container").add(evaluationProductionButton);
 
-		RootPanel.get("evaluation-button-container").add(evaluationImportExportButton);
-		final Button evaluationProductionButton = new Button("Produktion",
-				new ClickHandler() {
+		evaluationImportButton = new Button(
+				"Import", new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						setSelection("production");						
+						setSelection("import");
+						RootPanel.get("evaluation-button-production-container").removeStyleName("active");
+						RootPanel.get("evaluation-button-import-container").addStyleName("active");
+						RootPanel.get("evaluation-button-export-container").removeStyleName("active");
+						RootPanel.get("evaluation-button-population-container").removeStyleName("active");
 					}
 				});
-		RootPanel.get("evaluation-button-container").add(evaluationProductionButton);
-		final Button evaluationPopulationButton = new Button("Bevoelkerung",
-				new ClickHandler() {
+		RootPanel.get("evaluation-button-import-container").add(evaluationImportButton);
+		
+		evaluationExportButton = new Button(
+				"Export", new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						setSelection("population");						
+						setSelection("export");
+						RootPanel.get("evaluation-button-production-container").removeStyleName("active");
+						RootPanel.get("evaluation-button-import-container").removeStyleName("active");
+						RootPanel.get("evaluation-button-export-container").addStyleName("active");
+						RootPanel.get("evaluation-button-population-container").removeStyleName("active");
 					}
 				});
-		RootPanel.get("evaluation-button-container").add(evaluationPopulationButton);
+		RootPanel.get("evaluation-button-export-container").add(evaluationExportButton);
+		
+		evaluationPopulationButton = new Button("Bevoelkerung",
+				new ClickHandler() {
+					public void onClick(ClickEvent event) {
+						setSelection("population");	
+						RootPanel.get("evaluation-button-production-container").removeStyleName("active");
+						RootPanel.get("evaluation-button-import-container").removeStyleName("active");
+						RootPanel.get("evaluation-button-export-container").removeStyleName("active");
+						RootPanel.get("evaluation-button-population-container").addStyleName("active");
+					}
+				});
+		RootPanel.get("evaluation-button-population-container").add(evaluationPopulationButton);
 		
 		// Add Visualization Buttons
 		final Button visualizationTableButton = new Button("Tabelle",
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						dataRequest();
+						activeVisualization = "table";
+						RootPanel.get("visualization-button-table-container").addStyleName("active");
+						RootPanel.get("visualization-button-map-container").removeStyleName("active");
+						visualizeTable(activeData);
 					}
 				});
-		RootPanel.get("visualization-button-container").add(visualizationTableButton);
+		RootPanel.get("visualization-button-table-container").add(visualizationTableButton);
 		
 		final Button visualizationMapButton = new Button("Karte",
 				new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						dataRequest();
+						activeVisualization = "map";
+						RootPanel.get("visualization-button-map-container").addStyleName("active");
+						RootPanel.get("visualization-button-table-container").removeStyleName("active");
+						visualizeMap(activeData);
 					}
 				});
-		RootPanel.get("visualization-button-container").add(visualizationMapButton);
+		RootPanel.get("visualization-button-map-container").add(visualizationMapButton);
 		
 
 		/////////////////////////////////////////////////////////////////
@@ -133,7 +181,7 @@ public class AgriPro extends Visualisation implements EntryPoint {
 		countryLb.addChangeHandler(new ChangeHandler() {
 		    public void onChange(ChangeEvent event) {
 				activeCountry = metaCountriesArray.get(countryLb.getSelectedIndex());
-				if(activeSelection=="production"||activeSelection=="trade"){
+				if(activeSelection=="production"||activeSelection=="import"||activeSelection=="export"){
 					metaRequest("seed");
 				} else {
 					dataRequest();
@@ -157,6 +205,17 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	    visualisationTitle.setText("Visualisierung");
 		RootPanel.get("result-title").add(visualisationTitle);
 		
+
+		/////////////////////////////////////////////////////////////////
+		// FOOTER
+		bookmark = new Hyperlink("Bookmark", "javascript:void(0);");
+		bookmark.addClickHandler(new ClickHandler() {
+	       public void onClick(ClickEvent event) {
+	           saveParameters();
+	       }
+		});
+		RootPanel.get("bookmark-container").add(bookmark);
+		
 		
 		
 		
@@ -171,14 +230,61 @@ public class AgriPro extends Visualisation implements EntryPoint {
 				});
 		RootPanel.get("debug-hide").add(debugHideButton);
 		
+		
+		
+		
+		
+
+		// *********************** START *********************** //
+		// auto load get parameters
+		loadParameters();
+		// start meta request
+		metaRequest("year");
 	}
 	
-		
-	// display card
-	private void visualizeCard() {
-		HTML html = new HTML("Hier wird in Zukunft eine Kartendarstellung sichtbar sein");
-		RootPanel.get("result-box").add(html);
+	
+	public void loadParameters(){
+		if(Window.Location.getParameter("activeVisualization")=="table"||Window.Location.getParameter("activeVisualization")=="map"){
+			activeVisualization = Window.Location.getParameter("activeVisualization");
+		}
+		if(Window.Location.getParameter("activeSelection")=="production"||Window.Location.getParameter("activeSelection")=="import"||Window.Location.getParameter("activeSelection")=="export"||Window.Location.getParameter("activeSelection")=="population"){
+			activeSelection = Window.Location.getParameter("activeSelection");
+		}
+		if(Window.Location.getParameter("activeYear")!=null){
+			overrideYear = Window.Location.getParameter("activeYear");
+		}
+		if(Window.Location.getParameter("activeCountry")!=null){
+			overrideCountry = Window.Location.getParameter("activeCountry");
+		}
+		if(Window.Location.getParameter("activeSeed")!=null){
+			overrideSeed = Window.Location.getParameter("activeSeed");
+		}
 	}
+	
+
+	public void saveParameters(){
+        String newUrl = "http://"+Window.Location.getHost()+"/";
+       
+        newUrl += "?activeVisualization="+activeVisualization;
+        
+        if(activeSelection!=null){
+        	newUrl += "&activeSelection="+activeSelection;
+        }
+        if(activeYear!=null){
+        	newUrl += "&activeYear="+activeYear;
+        }
+        if(activeCountry!=null){
+        	newUrl += "&activeCountry="+activeCountry;
+        }
+        if(activeSeed!=null){
+        	newUrl += "&activeSeed="+activeSeed;
+        }
+        
+        Window.alert("Your current configuration is now saved under this link: " + newUrl);
+        Window.Location.assign(newUrl);
+	}
+	
+	
 
 	// request meta
 	public void setSelection(String newSelection){
@@ -191,6 +297,11 @@ public class AgriPro extends Visualisation implements EntryPoint {
 		metaRequest("year");
 	}
 	public void metaRequest(String meta){
+		// reset results
+	    RootPanel.get("result-title").clear();
+		RootPanel.get("result-box").clear();
+		HTML html = new HTML("<br /><center><img src='loading2.gif' /></center>");
+		RootPanel.get("result-box").add(html);
 		
 		// reset dependent data & get value
 		if(meta=="year"){
@@ -219,20 +330,28 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	
 	// request data
 	public void dataRequest(){
+		// reset results
+		if(activeSelection=="population"){
+			guiUpdateVisualisationTitle(activeSelection.substring(0, 1).toUpperCase() + activeSelection.substring(1) + " of " + activeCountry + ", " + activeYear);
+			
+		} else {
+			guiUpdateVisualisationTitle(activeSelection.substring(0, 1).toUpperCase() + activeSelection.substring(1) + " of " + activeSeed + " in " + activeCountry + ", " + activeYear);
+		}
+		RootPanel.get("result-box").clear();
+		HTML html = new HTML("<br /><center><img src='loading2.gif' /></center>");
+		RootPanel.get("result-box").add(html);
+		
 		
 		// get selection
 		activeYear = metaYearsArray.get(yearLb.getSelectedIndex());
 		activeCountry = metaCountriesArray.get(countryLb.getSelectedIndex());
-		if(activeSelection=="production"||activeSelection=="trade"){
+		if(activeSelection=="production"||activeSelection=="import"||activeSelection=="export"){
 			activeSeed = metaSeedsArray.get(seedLb.getSelectedIndex());
 		} else {
 			activeSeed = null;
 		}
 		
 		debug("Data Request started: "+activeSelection+ " with parameters "+activeYear+", "+activeCountry+", "+activeSeed);
-		
-		// clear results
-	    RootPanel.get("result-box").clear();
 		
 		// send request
 		if(activeSelection=="population"){
@@ -241,7 +360,7 @@ public class AgriPro extends Visualisation implements EntryPoint {
 		if(activeSelection=="production"){
 			dataService.getData(++requestID, activeSelection, activeYear, activeCountry, activeSeed, new DataCallBack());			
 		}
-		if(activeSelection=="trade"){
+		if(activeSelection=="export"||activeSelection=="import"){
 			dataService.getData(++requestID, activeSelection, activeYear, activeCountry, activeSeed, new DataCallBack());
 		}
 	}	
@@ -279,7 +398,7 @@ public class AgriPro extends Visualisation implements EntryPoint {
 					metaCountriesArray = result.getData();
 					guiUpdateSelection();
 					activeCountry = metaCountriesArray.get(countryLb.getSelectedIndex());
-					if(result.getType()=="production"||result.getType()=="trade"){
+					if(result.getType()=="production"||result.getType()=="import"||result.getType()=="export"){
 						metaRequest("seed");
 					} else {
 						dataRequest();
@@ -296,7 +415,12 @@ public class AgriPro extends Visualisation implements EntryPoint {
 			
 			// normal data
 			activeData = result;
-			visualizeTable(activeData);
+			if(activeVisualization=="table"){
+				visualizeTable(activeData);
+			}
+			if(activeVisualization=="map"){
+				visualizeMap(activeData);
+			}
 		}
 	}
 	
@@ -308,21 +432,46 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	
 	
 	public void guiUpdateVisualisationTitle(String title){
+		/*
 	    InlineLabel visualisationTitle = new InlineLabel();
-	    visualisationTitle.setText("Visualisierung: "+title);
+	    visualisationTitle.setText(title);
 	    RootPanel.get("result-title").clear();
 	    RootPanel.get("result-title").add(visualisationTitle);
+	    */
+	    HTML html = new HTML(title);
+	    RootPanel.get("result-title").clear();
+	    RootPanel.get("result-title").add(html);
 	}
 	
 	public void guiUpdateSelection() {
-		if(activeSelection=="population"){
-			guiUpdateVisualisationTitle("Bevoelkerung");
 
+		if(activeVisualization=="table"){
+			RootPanel.get("visualization-button-table-container").addStyleName("active");
+			RootPanel.get("visualization-button-map-container").removeStyleName("active");			
+		}
+		if(activeVisualization=="map"){
+			RootPanel.get("visualization-button-map-container").addStyleName("active");	
+			RootPanel.get("visualization-button-table-container").removeStyleName("active");			
+		}
+		
+		
+		if(activeSelection=="population"){
+			RootPanel.get("evaluation-button-production-container").removeStyleName("active");
+			RootPanel.get("evaluation-button-import-container").removeStyleName("active");
+			RootPanel.get("evaluation-button-export-container").removeStyleName("active");
+			RootPanel.get("evaluation-button-population-container").addStyleName("active");
 
 			// add year selection
 			yearLb.clear();
 			for (String temp : metaYearsArray) {
 				yearLb.addItem(temp, temp);
+				if(activeYear!=null && temp==activeYear){
+					yearLb.setSelectedIndex(yearLb.getItemCount()-1);
+				}
+				if(overrideYear!=null && temp==overrideYear){
+					overrideYear = null;
+					yearLb.setSelectedIndex(yearLb.getItemCount()-1);
+				}
 			}
 			yearLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
 		    RootPanel.get("evaluation-years-container").clear();
@@ -333,6 +482,13 @@ public class AgriPro extends Visualisation implements EntryPoint {
 				countryLb.clear();
 				for (String temp : metaCountriesArray) {
 					countryLb.addItem(temp, temp);
+					if(activeCountry!=null && temp==activeCountry){
+						countryLb.setSelectedIndex(countryLb.getItemCount()-1);
+					}
+					if(overrideCountry!=null && temp==overrideCountry){
+						overrideCountry = null;
+						countryLb.setSelectedIndex(countryLb.getItemCount()-1);
+					}
 				}
 				countryLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
 			    RootPanel.get("evaluation-countries-container").clear();
@@ -345,12 +501,22 @@ public class AgriPro extends Visualisation implements EntryPoint {
 		    
 		}
 		if(activeSelection=="production"){
-			guiUpdateVisualisationTitle("Produktion");
+			RootPanel.get("evaluation-button-import-container").removeStyleName("active");
+			RootPanel.get("evaluation-button-export-container").removeStyleName("active");
+			RootPanel.get("evaluation-button-production-container").addStyleName("active");
+			RootPanel.get("evaluation-button-population-container").removeStyleName("active");
 		    
 			// add year selection
 			yearLb.clear();
 			for (String temp : metaYearsArray) {
 				yearLb.addItem(temp, temp);
+				if(activeYear!=null && temp==activeYear){
+					yearLb.setSelectedIndex(yearLb.getItemCount()-1);
+				}
+				if(overrideYear!=null && temp==overrideYear){
+					overrideYear = null;
+					yearLb.setSelectedIndex(yearLb.getItemCount()-1);
+				}
 			}
 			yearLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
 		    RootPanel.get("evaluation-years-container").clear();
@@ -361,6 +527,13 @@ public class AgriPro extends Visualisation implements EntryPoint {
 				countryLb.clear();
 				for (String temp : metaCountriesArray) {
 					countryLb.addItem(temp, temp);
+					if(activeCountry!=null && temp==activeCountry){
+						countryLb.setSelectedIndex(countryLb.getItemCount()-1);
+					}
+					if(overrideCountry!=null && temp==overrideCountry){
+						overrideCountry = null;
+						countryLb.setSelectedIndex(countryLb.getItemCount()-1);
+					}
 				}
 				countryLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
 			    RootPanel.get("evaluation-countries-container").clear();
@@ -373,20 +546,37 @@ public class AgriPro extends Visualisation implements EntryPoint {
 				seedLb.clear();
 				for (String temp : metaSeedsArray) {
 					seedLb.addItem(temp, temp);
+					if(activeSeed!=null && temp==activeSeed){
+						seedLb.setSelectedIndex(seedLb.getItemCount()-1);
+					}
+					if(overrideSeed!=null && temp==overrideSeed){
+						overrideSeed = null;
+						seedLb.setSelectedIndex(seedLb.getItemCount()-1);
+					}
 				}
 				seedLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
 			    RootPanel.get("evaluation-seeds-container").clear();
 				RootPanel.get("evaluation-seeds-container").add(seedLb);
 			}
 		}
-		if(activeSelection=="trade"){
-			guiUpdateVisualisationTitle("Handel");
+		if(activeSelection=="import"){
+			RootPanel.get("evaluation-button-import-container").addStyleName("active");
+			RootPanel.get("evaluation-button-export-container").removeStyleName("active");
+			RootPanel.get("evaluation-button-production-container").removeStyleName("active");
+			RootPanel.get("evaluation-button-population-container").removeStyleName("active");
 
 
 			// add year selection
 			yearLb.clear();
 			for (String temp : metaYearsArray) {
 				yearLb.addItem(temp, temp);
+				if(activeYear!=null && temp==activeYear){
+					yearLb.setSelectedIndex(yearLb.getItemCount()-1);
+				}
+				if(overrideYear!=null && temp==overrideYear){
+					overrideYear = null;
+					yearLb.setSelectedIndex(yearLb.getItemCount()-1);
+				}
 			}
 			yearLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
 		    RootPanel.get("evaluation-years-container").clear();
@@ -397,6 +587,13 @@ public class AgriPro extends Visualisation implements EntryPoint {
 				countryLb.clear();
 				for (String temp : metaCountriesArray) {
 					countryLb.addItem(temp, temp);
+					if(activeCountry!=null && temp==activeCountry){
+						countryLb.setSelectedIndex(countryLb.getItemCount()-1);
+					}
+					if(overrideCountry!=null && temp==overrideCountry){
+						overrideCountry = null;
+						countryLb.setSelectedIndex(countryLb.getItemCount()-1);
+					}
 				}
 				countryLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
 			    RootPanel.get("evaluation-countries-container").clear();
@@ -409,6 +606,73 @@ public class AgriPro extends Visualisation implements EntryPoint {
 				seedLb.clear();
 				for (String temp : metaSeedsArray) {
 					seedLb.addItem(temp, temp);
+					if(activeSeed!=null && temp==activeSeed){
+						seedLb.setSelectedIndex(seedLb.getItemCount()-1);
+					}
+					if(overrideSeed!=null && temp==overrideSeed){
+						overrideSeed = null;
+						seedLb.setSelectedIndex(seedLb.getItemCount()-1);
+					}
+				}
+				seedLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
+			    RootPanel.get("evaluation-seeds-container").clear();
+				RootPanel.get("evaluation-seeds-container").add(seedLb);
+			}	
+		}
+		if(activeSelection=="export"){
+			RootPanel.get("evaluation-button-export-container").addStyleName("active");
+			RootPanel.get("evaluation-button-import-container").removeStyleName("active");
+			RootPanel.get("evaluation-button-production-container").removeStyleName("active");
+			RootPanel.get("evaluation-button-population-container").removeStyleName("active");
+
+
+			// add year selection
+			yearLb.clear();
+			for (String temp : metaYearsArray) {
+				yearLb.addItem(temp, temp);
+				if(activeYear!=null && temp==activeYear){
+					yearLb.setSelectedIndex(yearLb.getItemCount()-1);
+				}
+				if(overrideYear!=null && temp==overrideYear){
+					overrideYear = null;
+					yearLb.setSelectedIndex(yearLb.getItemCount()-1);
+				}
+			}
+			yearLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
+		    RootPanel.get("evaluation-years-container").clear();
+			RootPanel.get("evaluation-years-container").add(yearLb);
+
+			if(metaCountriesArray.size()>0){
+				// add country selection
+				countryLb.clear();
+				for (String temp : metaCountriesArray) {
+					countryLb.addItem(temp, temp);
+					if(activeCountry!=null && temp==activeCountry){
+						countryLb.setSelectedIndex(countryLb.getItemCount()-1);
+					}
+					if(overrideCountry!=null && temp==overrideCountry){
+						overrideCountry = null;
+						countryLb.setSelectedIndex(countryLb.getItemCount()-1);
+					}
+				}
+				countryLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
+			    RootPanel.get("evaluation-countries-container").clear();
+				RootPanel.get("evaluation-countries-container").add(countryLb);
+			}
+
+			if(metaSeedsArray.size()>0){
+				// add seed selection
+				RootPanel.get("super-seed-container").removeStyleName("invisible");		// boolean isMultipleSelect = true;
+				seedLb.clear();
+				for (String temp : metaSeedsArray) {
+					seedLb.addItem(temp, temp);
+					if(activeSeed!=null && temp==activeSeed){
+						seedLb.setSelectedIndex(seedLb.getItemCount()-1);
+					}
+					if(overrideSeed!=null && temp==overrideSeed){
+						overrideSeed = null;
+						seedLb.setSelectedIndex(seedLb.getItemCount()-1);
+					}
 				}
 				seedLb.setVisibleItemCount(1); // Make enough room for all seeds (setting this value to 1 turns it into a drop-down list).
 			    RootPanel.get("evaluation-seeds-container").clear();

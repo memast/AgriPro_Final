@@ -18,7 +18,12 @@ public class ImportPopulation implements Serializable {
 		try{
 			Class.forName("com.mysql.jdbc.GoogleDriver");
 			Connection conn = DriverManager.getConnection("jdbc:google:mysql://agriprouzh:db/db?user=root");
-			ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM population WHERE YEAR = '"+year+"' AND AreaName = '"+country+"' LIMIT 100");
+			ResultSet rs;
+			if(country.equals("Global")){
+				rs = conn.createStatement().executeQuery("SELECT * FROM population WHERE YEAR = '"+year+"'");
+			} else {
+				rs = conn.createStatement().executeQuery("SELECT * FROM population WHERE YEAR = '"+year+"' AND AreaName = '"+country+"'");			
+			}
 			while (rs.next()) {	
 				// loop through results
 				ArrayList tmpArray = new ArrayList();

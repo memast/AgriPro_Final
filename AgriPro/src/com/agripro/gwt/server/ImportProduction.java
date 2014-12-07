@@ -18,7 +18,12 @@ public class ImportProduction implements Serializable {
 		try{
 			Class.forName("com.mysql.jdbc.GoogleDriver");
 			Connection conn = DriverManager.getConnection("jdbc:google:mysql://agriprouzh:db/db?user=root");
-			ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM production WHERE YEAR = '"+year+"' AND AreaName = '"+country+"' AND ItemName = '"+seed+"' LIMIT 100");
+			ResultSet rs;
+			if(country.equals("Global")){
+				rs = conn.createStatement().executeQuery("SELECT * FROM production WHERE YEAR = '"+year+"' AND ItemName = '"+seed+"'");
+			} else {
+				rs = conn.createStatement().executeQuery("SELECT * FROM production WHERE YEAR = '"+year+"' AND AreaName = '"+country+"' AND ItemName = '"+seed+"'");			
+			}
 			while (rs.next()) {	
 				// loop through results
 				ArrayList tmpArray = new ArrayList();

@@ -13,12 +13,26 @@ import com.agripro.gwt.client.Data;
 public class ImportTrade implements Serializable {
 	private ArrayList dataArray = new ArrayList();
 
-	public ImportTrade(String year, String country, String seed) {		
+	public ImportTrade(String selection, String year, String country, String seed) {		
 		System.out.println("****LOADING: TRADE ****");
 		try{
 			Class.forName("com.mysql.jdbc.GoogleDriver");
 			Connection conn = DriverManager.getConnection("jdbc:google:mysql://agriprouzh:db/db?user=root");
-			ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM trade WHERE YEAR = '"+year+"' AND AreaName = '"+country+"' AND ItemName = '"+seed+"' LIMIT 100");
+			ResultSet rs;
+			String selectionString;
+			
+			if(selection.equals("import")){
+				selectionString = "Import Quantity";
+			} else {
+				selectionString = "Export Quantity";
+			}
+			
+			if(country.equals("Global")){
+				rs = conn.createStatement().executeQuery("SELECT * FROM trade WHERE ElementName = '"+selectionString+"' AND YEAR = '"+year+"' AND ItemName = '"+seed+"'");
+			} else {
+				rs = conn.createStatement().executeQuery("SELECT * FROM trade WHERE ElementName = '"+selectionString+"' AND YEAR = '"+year+"' AND AreaName = '"+country+"' AND ItemName = '"+seed+"'");	
+			}
+			
 			while (rs.next()) {	
 				// loop through results
 				ArrayList tmpArray = new ArrayList();
