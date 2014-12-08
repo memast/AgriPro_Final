@@ -28,13 +28,12 @@ import com.google.gwt.visualization.client.visualizations.GeoMap.Options;
 
 public class Visualisation {
 	
+	// Visualize as Map
 	public void visualizeMap(Data activeData){
 		// reset results
 		RootPanel.get("result-box").clear();
 		
-
-	    
-		
+		// create options for map
 	    final Options options = Options.create();
 	    options.setDataMode(GeoMap.DataMode.REGIONS);
 	    options.setHeight(650);
@@ -43,35 +42,34 @@ public class Visualisation {
 	    options.setColors(0xFF8747, 0xFFB581, 0xc06000);
 	    options.setRegion("world");
 
+	    // create data table for map
 	    final DataTable dataTable = DataTable.create();
 	    dataTable.addColumn(ColumnType.STRING, "Country");
 	    dataTable.addColumn(ColumnType.NUMBER, activeData.getType().substring(0, 1).toUpperCase() + activeData.getType().substring(1));
 	    
-	    // add data
+	    // add data to data table
 	    dataTable.addRows(activeData.getData().size());
-	    
 		for (int i = 0; i < activeData.getData().size() ; i++) {
 			ArrayList currentLine = (ArrayList) activeData.getData().get(i);
 		    dataTable.setValue(i, 0, currentLine.get(3).toString());
 		    dataTable.setValue(i, 1, currentLine.get(10).toString());
 			}
 
+		// create & insert map
 	    final GeoMap geo = new GeoMap(dataTable, options);
 	    RootPanel.get("result-box").add(geo);
-	    
 	}
 	
+	// Visualize as Table
 	public void visualizeTable(Data activeData) {
 		// reset results
 		RootPanel.get("result-box").clear();
 		
-		// Visualize as table
+		//  variables for table
 		final ScrollPanel scrollPanel = new ScrollPanel();		
 		final FlexTable tabelle = new FlexTable();
-	
 		final DockLayoutPanel dock = new DockLayoutPanel(Unit.EM); 
 		final FlowPanel header = new FlowPanel(); 
-		
 		
 		// sets the column span so that it takes up the whole row
 		tabelle.setWidth("100%");
@@ -99,63 +97,18 @@ public class Visualisation {
 			 tabelle.getColumnFormatter().setWidth(j, "6%");
 			 tabelle.setHTML(0, j, "<span class='b'>"+tableHeader.get(j).toString()+"</span");
 		 }
-	 
 		
-		
-		//checks wich mode is selected 
-			if(activeData.getType() == "import"){
-				for (int i = 0; i < activeData.getData().size() ; i++) {
-					ArrayList currentLine = (ArrayList) activeData.getData().get(i);
-						// add the line to our table
-						for (int j = 0; j < currentLine.size() - 2; j++) {
-							tabelle.getColumnFormatter().setWidth(j, "6%");
-							tabelle.setText(i+1, j, currentLine.get(j).toString());
-						}
-					}
-				
-		    }
-			
-			if(activeData.getType() == "export"){
-				for (int i = 0; i < activeData.getData().size() ; i++) {
-					ArrayList currentLine = (ArrayList) activeData.getData().get(i);
-						// add the line to our table
-						for (int j = 0; j < currentLine.size() - 2; j++) {
-							tabelle.getColumnFormatter().setWidth(j, "6%");
-							tabelle.setText(i+1, j, currentLine.get(j).toString());
-						}
-					}
-				
-		    }
-		
-		
-		else if(activeData.getType() == "production"){
-			for (int i = 0; i < activeData.getData().size() ; i++) {
-				ArrayList currentLine = (ArrayList) activeData.getData().get(i);
-					// add the line to our table
-					for (int j = 0; j < currentLine.size() - 2; j++) {
-						tabelle.getColumnFormatter().setWidth(j, "6%");
-						tabelle.setText(i+1, j, currentLine.get(j).toString());
-					}
-				}
-			
+		 // add data to table
+		 for (int i = 0; i < activeData.getData().size() ; i++) {
+			ArrayList currentLine = (ArrayList) activeData.getData().get(i);
+			// add the line to our table
+			for (int j = 0; j < currentLine.size() - 2; j++) {
+				tabelle.getColumnFormatter().setWidth(j, "6%");
+				tabelle.setText(i+1, j, currentLine.get(j).toString());
+			}
 		}
-		
-		else if(activeData.getType() == "population"){
-			for (int i = 0; i < activeData.getData().size() ; i++) {
-				ArrayList currentLine = (ArrayList) activeData.getData().get(i);
-					// add the line to our table
-					for (int j = 0; j < currentLine.size() - 2; j++) {
-						tabelle.getColumnFormatter().setWidth(j, "6%");
-						tabelle.setText(i+1, j, currentLine.get(j).toString());
-					}
-				}
-			
-		}
-
-		
+		 
+		// add table
 	    RootPanel.get("result-box").add(tabelle); 
 	}
-	
-
-
 }

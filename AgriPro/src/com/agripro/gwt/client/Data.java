@@ -12,34 +12,33 @@ public class Data implements Serializable {
 	public Data() {
 	};
 
+	// The data contained in this object
 	private ArrayList dataArray = new ArrayList();
 
+	
+	// Getter & Setter methods
 	public void setType(String type) {
 		this.type = type;
 	}
 	public String getType() {
 		return type;
 	}
-	
 	public String getMeta() {
 		return meta;
 	}
 	public void setMeta(String meta) {
 		this.meta = meta;
 	}
-
 	public int getRequestID() {
 		return requestID;
 	}
 	public void setRequestID(int requestID) {
 		this.requestID = requestID;
 	}
-	
 	public void setData(ArrayList array) {
 		this.dataArray = array;
 	}
 	public ArrayList getData() {
 		return dataArray;
 	}
-	
 }

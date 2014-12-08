@@ -14,6 +14,7 @@ import com.agripro.gwt.client.DataService;
 import java.util.ArrayList;
 public class DataServiceImpl extends RemoteServiceServlet implements DataService {
 
+	// Variables for meta data & data import
 	private static final long serialVersionUID = 1L;
 	private ImportProduction productionData;
 	private ImportTrade tradeData;
@@ -23,10 +24,16 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 	private metaImportPopulation metaPopulationData;
 	
 
+	// getMetaData
+	//
+	// requestID: the ID of this request. required.
+	// selection: the desired selection (production, import, export, population). required.
+	// year: the desired year. required.
+	// country: the desired country. required.
+	//
+	// returns a data object containing meta data
 	public Data getMetaData(int requestID, String selection, String year, String country) {
-		// META
-		System.out.println("****Meta Data Service started with Parameter: " + selection + ", " + year +", " + country + "****");
-		
+		// create data object
 		Data data = new Data();
 		data.setRequestID(requestID);
 		data.setType(selection);
@@ -39,7 +46,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 			// meta: population
 			metaPopulationData = new metaImportPopulation(year, country);
 
-			// store data
+			// store & return data
 			data.setData(metaPopulationData.getRawData());
 			return data;			
 		}
@@ -47,7 +54,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 			// meta: production
 			metaProductionData = new metaImportProduction(year, country);
 
-			// store data
+			// store & return data
 			data.setData(metaProductionData.getRawData());
 			return data;			
 		}
@@ -55,21 +62,27 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 			// meta: trade
 			metaTradeData = new metaImportTrade(selection, year, country);
 
-			// store data
+			// store & return data
 			data.setData(metaTradeData.getRawData());
 			return data;		
 		}
 		
-		// if we are still here --> unknown mode
-		System.out.println("ERROR: unrecognized data request. Your input was: " + selection + ", " + year +", " + country + "****");
+		// if we are still here --> unknown mode --> return empty data object
 		return data;
 	}
 	
 
+	// getData
+	//
+	// requestID: the ID of this request. required.
+	// selection: the desired selection (production, import, export, population). required.
+	// year: the desired year. required.
+	// country: the desired country. required.
+	// seed: the desired seed. required if selection is production, import or export. for population, it is required but currently not used - for future use.
+	//
+	// returns a data object containing data
 	public Data getData(int requestID, String selection, String year, String country, String seed){
-		// PRODUCTION or TRADE
-		System.out.println("****Data Service started with Parameter: " + selection + "****");
-
+		// create data object
 		Data data = new Data();
 		data.setRequestID(requestID);
 		data.setType(selection);
@@ -77,30 +90,26 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 		if (selection.equals("population")) {
 			// population mode
 			populationData = new ImportPopulation(year, country);
+			// store & return data
 			data.setData(populationData.getRawData());
 			return data;
 		}
 		if (selection.equals("production")) {
 			// production mode
-			/*
-			// check whether we need to import data or if already imported
-			if (productionData == null) {
-				// import data
-				productionData = new ImportProduction();
-			}
-			*/
 			productionData = new ImportProduction(year, country, seed);
+			// store & return data
 			data.setData(productionData.getRawData());
 			return data;
 		}
 		if (selection.equals("import")||selection.equals("export")) {
 			// trade mode
 			tradeData = new ImportTrade(selection, year, country, seed);
+			// store & return data
 			data.setData(tradeData.getRawData());
 			return data;
 		}	
-		// if we are still here --> unknown mode
-		System.out.println("ERROR: unrecognized data request. Your input was: '"+ selection + "'.");
+		
+		// if we are still here --> unknown mode --> return empty data object
 		return data;	
 	}
 }

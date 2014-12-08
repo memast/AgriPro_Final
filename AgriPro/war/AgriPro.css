@@ -281,7 +281,6 @@ h3{
 	margin-right: auto;
 }
 #content-container  #footer-container .box{
-	width: 311px; /* width of document = 1020, width of borders,spacing,padding = 86. Calculate (1020 - 86) / 3 = 311.3333 */
 	padding: 10px;
 	border: 1px solid #C6C6C6;
 	float: left;

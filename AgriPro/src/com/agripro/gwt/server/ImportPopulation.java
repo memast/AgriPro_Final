@@ -13,12 +13,15 @@ import com.agripro.gwt.client.Data;
 public class ImportPopulation implements Serializable {
 	private ArrayList dataArray = new ArrayList();
 
-	public ImportPopulation(String year, String country) {		
-		System.out.println("****LOADING: POPULATION ****");
+	// fills dataArray with population data based on year and country
+	public ImportPopulation(String year, String country) {
 		try{
+			// create db connection
 			Class.forName("com.mysql.jdbc.GoogleDriver");
 			Connection conn = DriverManager.getConnection("jdbc:google:mysql://agriprouzh:db/db?user=root");
 			ResultSet rs;
+			
+			// request data from sql database
 			if(country.equals("Global")){
 				rs = conn.createStatement().executeQuery("SELECT * FROM population WHERE YEAR = '"+year+"'");
 			} else {
@@ -42,14 +45,16 @@ public class ImportPopulation implements Serializable {
 				tmpArray.add(rs.getString(13));
 				dataArray.add(tmpArray);	
 			}
-		conn.close();
+			
+			// close db connection to reduce db load
+			conn.close();
 		} catch (Exception e) {
 			System.out.println("ERROR:");
 			System.out.println(e.toString());
 		}
-		System.out.println("****LOADED POPULATION ****");
 	}
 
+	// returns stored sql data of this object
 	public ArrayList getRawData() {
 		return dataArray;
 	}

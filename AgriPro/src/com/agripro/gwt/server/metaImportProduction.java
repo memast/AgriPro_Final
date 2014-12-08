@@ -13,13 +13,15 @@ import com.agripro.gwt.client.Data;
 public class metaImportProduction implements Serializable {
 	private ArrayList dataArray = new ArrayList();
 
+	// fills dataArray with meta data for production based on year and country
 	public metaImportProduction(String year, String country) {		
-		System.out.println("****LOADING: META->PRODUCTION ****");
 		try{
+			// create db connection
 			Class.forName("com.mysql.jdbc.GoogleDriver");
 			Connection conn = DriverManager.getConnection("jdbc:google:mysql://agriprouzh:db/db?user=root");
 			ResultSet rs;
 
+			// request data from sql database
 			if(year==null&&country==null){
 				rs = conn.createStatement().executeQuery("SELECT DISTINCT Year FROM production ORDER BY Year Desc");
 				while (rs.next()) {	
@@ -50,17 +52,18 @@ public class metaImportProduction implements Serializable {
 					dataArray.add(rs.getString(1));				
 				}
 			}
-		conn.close();
+			
+			// close db connection to reduce db load
+			conn.close();
 		} catch (Exception e) {
 			System.out.println("ERROR:");
 			System.out.println(e.toString());
 		}
-		System.out.println("****LOADED META->PRODUCTION ****");
 	}
 
 	
-	
-	
+
+	// returns stored sql data of this object
 	public ArrayList getRawData() {
 		return dataArray;
 	}

@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.*;
 
 public class AgriPro extends Visualisation implements EntryPoint {
 	///////////////////////////////////////////////////////////////////////////////////////////////////
-	//	SYSTEM
+	//	SYSTEM VARIABLES
 	private int requestID;
 	private Data activeData;
 	private static final String SERVER_ERROR = "An error occurred while attempting to contact the server. Please check your network connection and try again.";
@@ -49,10 +49,12 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	private String activeSeed;
 	private String activeVisualization = "table"; // standard visualization is set to table
 
+	// If we load the system using a bookmark link, use these variables to override the values once.
 	private String overrideYear = null;
 	private String overrideCountry = null;
 	private String overrideSeed = null;
 	
+	// get & setter for selected mode, year, country and seed
 	public String getActiveSelection() { return activeSelection; }
 	public String getActiveYear() { return activeYear; }
 	public String getActiveCountry() { return activeCountry; }
@@ -75,7 +77,7 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////
-	// GUI
+	// GUI VARIABLES
 	ListBox yearLb = new ListBox();
 	ListBox countryLb = new ListBox();
 	ListBox seedLb = new ListBox();
@@ -88,15 +90,10 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	Hyperlink bookmark;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////
-	// START
+	// START THE PROGRAM
 	public void onModuleLoad() {
-		debug("Started");
-				
-		// request standard selection: production
-		//metaRequest("year");
-		//test();
-		
 		// *********************** FORM HTML *********************** //
+		// SELECTION
 		// Add Selection Buttons
 		evaluationProductionButton = new Button("Produktion",
 				new ClickHandler() {
@@ -169,9 +166,7 @@ public class AgriPro extends Visualisation implements EntryPoint {
 				});
 		RootPanel.get("visualization-button-map-container").add(visualizationMapButton);
 		
-
-		/////////////////////////////////////////////////////////////////
-		// AUSWAHL
+		// Add change handlers
 		yearLb.addChangeHandler(new ChangeHandler() {
 		    public void onChange(ChangeEvent event) {
 				activeYear = metaYearsArray.get(yearLb.getSelectedIndex());
@@ -195,18 +190,13 @@ public class AgriPro extends Visualisation implements EntryPoint {
 		    }
 		});
 
-		/////////////////////////////////////////////////////////////////
-		// DARSTELLUNG
 		
-
-		/////////////////////////////////////////////////////////////////
-		// VISUALISIERUNG
+		// VISUALIZATION
 	    InlineLabel visualisationTitle = new InlineLabel();
 	    visualisationTitle.setText("Visualisierung");
 		RootPanel.get("result-title").add(visualisationTitle);
 		
 
-		/////////////////////////////////////////////////////////////////
 		// FOOTER
 		bookmark = new Hyperlink("Bookmark", "javascript:void(0);");
 		bookmark.addClickHandler(new ClickHandler() {
@@ -216,26 +206,11 @@ public class AgriPro extends Visualisation implements EntryPoint {
 		});
 		RootPanel.get("bookmark-container").add(bookmark);
 		
-		
-		
-		
 		// *********************** HTML FORMED *********************** //
-		
-		// DEBUG
-		final Button debugHideButton = new Button("Hide Debugger",
-				new ClickHandler() {
-					public void onClick(ClickEvent event) {
-						RootPanel.get("debug").setStyleName("invisible");
-					}
-				});
-		RootPanel.get("debug-hide").add(debugHideButton);
-		
-		
-		
 		
 		
 
-		// *********************** START *********************** //
+		// START THE PROGRAM
 		// auto load get parameters
 		loadParameters();
 		// start meta request
@@ -243,6 +218,7 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	}
 	
 	
+	// Load selection from GET variables from bookmark link
 	public void loadParameters(){
 		if(Window.Location.getParameter("activeVisualization")=="table"||Window.Location.getParameter("activeVisualization")=="map"){
 			activeVisualization = Window.Location.getParameter("activeVisualization");
@@ -262,9 +238,9 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	}
 	
 
+	// Save current selection as link
 	public void saveParameters(){
         String newUrl = "http://"+Window.Location.getHost()+"/";
-       
         newUrl += "?activeVisualization="+activeVisualization;
         
         if(activeSelection!=null){
@@ -286,7 +262,7 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	
 	
 
-	// request meta
+	// Set active selection: either production, import, export or population.
 	public void setSelection(String newSelection){
 		activeSelection = newSelection;
 		
@@ -296,6 +272,8 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	    // start meta request
 		metaRequest("year");
 	}
+
+	// Request Meta Data for either year, country or seed
 	public void metaRequest(String meta){
 		// reset results
 	    RootPanel.get("result-title").clear();
@@ -324,11 +302,10 @@ public class AgriPro extends Visualisation implements EntryPoint {
 		}
 		
 	    // send request
-		debug("Meta Request started: "+meta+" with parameters "+activeYear+", "+activeCountry);
 		dataService.getMetaData(++requestID, activeSelection, activeYear, activeCountry, new DataCallBack());
 	}
 	
-	// request data
+	// Request Table/Map data
 	public void dataRequest(){
 		// reset results
 		if(activeSelection=="population"){
@@ -351,8 +328,6 @@ public class AgriPro extends Visualisation implements EntryPoint {
 			activeSeed = null;
 		}
 		
-		debug("Data Request started: "+activeSelection+ " with parameters "+activeYear+", "+activeCountry+", "+activeSeed);
-		
 		// send request
 		if(activeSelection=="population"){
 			dataService.getData(++requestID, activeSelection, activeYear, activeCountry, activeSeed, new DataCallBack());			
@@ -366,21 +341,16 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	}	
 	
 
+	// Callback funciton for meta & data requests
 	private class DataCallBack implements AsyncCallback<Data> {
 		@Override
 		public void onFailure(Throwable caught) {
 			/* server side error occured */
-			debug("DataCallBackError: "+caught.getMessage());
 		}
 
 		@Override
-		public void onSuccess(Data result) {
-			debug("--> " +activeSelection + " DataCallBack Success");
-			debug("---> " +"Type: "+result.getType());
-			debug("---> " +"Meta: "+result.getMeta());
-			debug("---> " +"Data: "+result.getData().toString());
-			
-			// verify request id: is this request the active one, or was another request called?
+		public void onSuccess(Data result) {			
+			// verify request id: is this request the currently active request, or was another request called in the meantime?
 			if(result.getRequestID()!=requestID){ return; }
 			
 			// update selection
@@ -427,24 +397,18 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	
 
 	
-	
-	
-	
-	
+	// Update Visualization title
 	public void guiUpdateVisualisationTitle(String title){
-		/*
-	    InlineLabel visualisationTitle = new InlineLabel();
-	    visualisationTitle.setText(title);
-	    RootPanel.get("result-title").clear();
-	    RootPanel.get("result-title").add(visualisationTitle);
-	    */
 	    HTML html = new HTML(title);
 	    RootPanel.get("result-title").clear();
 	    RootPanel.get("result-title").add(html);
 	}
 	
+	
+	// Update GUI
 	public void guiUpdateSelection() {
-
+		
+		// Update Table/Map
 		if(activeVisualization=="table"){
 			RootPanel.get("visualization-button-table-container").addStyleName("active");
 			RootPanel.get("visualization-button-map-container").removeStyleName("active");			
@@ -453,7 +417,7 @@ public class AgriPro extends Visualisation implements EntryPoint {
 			RootPanel.get("visualization-button-map-container").addStyleName("active");	
 			RootPanel.get("visualization-button-table-container").removeStyleName("active");			
 		}
-		
+
 		
 		if(activeSelection=="population"){
 			RootPanel.get("evaluation-button-production-container").removeStyleName("active");
@@ -680,52 +644,5 @@ public class AgriPro extends Visualisation implements EntryPoint {
 			}	
 		}
 		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-	public void debug(String input){
-		HTML html = new HTML(input + "<br />");
-		RootPanel.get("debug").add(html);
 	}
 }

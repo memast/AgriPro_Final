@@ -2,8 +2,9 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>AgriPro</title>
+  <title>AgriPro v1.0</title>
   <script type="text/javascript" language="javascript" src="agripro/agripro.nocache.js"></script>
+  <!--  Import Geomap javascript functions -->
   <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 	<script type="text/javascript">
       google.load("visualization", "1", {packages:["geomap"]});
@@ -18,11 +19,9 @@
 
 <!-- HTML Content -->
 <div id="header-container"><div id="header">
-
 	<div class="fll">
-		<a href="/">AgriPro</a>
+		<a href="/">AgriPro v1.0</a>
 	</div>
-	
 	<div class="flr">
 		<a href="/" class="active">Analyse</a>
 		<a href="/help.html">Hilfe</a>
@@ -32,7 +31,6 @@
 </div></div>
 
 <br clear="all" />
-
 <div id="content-container">
 
 	<noscript>
@@ -42,8 +40,6 @@
 	  <br />
 	  </div>
 	</noscript>
-
-	<div id="debug" class="box" style="display: none;"><div id="debug-hide"></div></div>
 
 	<div id="selection-container" class="box">
 		<h2>Auswahl</h2>
@@ -57,21 +53,16 @@
 			<span id="evaluation-button-export-container"></span>
 			<span id="evaluation-button-population-container"></span>
 		</div>
-
 		<br clear="all" />
 		<hr />
 		<br clear="all" />
-
 		<div class="selection-left">Jahr</div>
 		<div class="selection-right" id="evaluation-years-container"></div>
-		
 		<br clear="all" />
 		<hr />
 		<br clear="all" />
-		
 		<div class="selection-left">Land</div>
 		<div class="selection-right" id="evaluation-countries-container"></div>
-	
 		<div id="super-seed-container">
 			<br clear="all" />
 			<hr />
@@ -80,8 +71,8 @@
 			<div class="selection-right" id="evaluation-seeds-container"></div>
 		</div>
 		<br clear="all" />
-
 	</div>
+	
 	<div id="visualization-container" class="box">
 		<h2>Darstellung</h2>
 		<div class="flr" id="visualization-button-container">
@@ -90,7 +81,6 @@
 		</div>
 		<br clear="all" />
 	</div>
-	
 	
 	<div id="result-container" class="box">
 		<h2 id="result-title"></h2>
@@ -110,9 +100,7 @@
 		<br clear="all" />
 	</div>
 	
-	
 	<div id="ads" class="box"><br /><center style="font-style: italic;">Hier koennte Ihre Werbung stehen.</center><br /></div>
-
 </div>
 
 

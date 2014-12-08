@@ -13,9 +13,10 @@ import com.agripro.gwt.client.Data;
 public class ImportTrade implements Serializable {
 	private ArrayList dataArray = new ArrayList();
 
-	public ImportTrade(String selection, String year, String country, String seed) {		
-		System.out.println("****LOADING: TRADE ****");
+	// fills dataArray with trade data based on year, country and seed
+	public ImportTrade(String selection, String year, String country, String seed) {	
 		try{
+			// create db connection
 			Class.forName("com.mysql.jdbc.GoogleDriver");
 			Connection conn = DriverManager.getConnection("jdbc:google:mysql://agriprouzh:db/db?user=root");
 			ResultSet rs;
@@ -26,7 +27,8 @@ public class ImportTrade implements Serializable {
 			} else {
 				selectionString = "Export Quantity";
 			}
-			
+
+			// request data from sql database
 			if(country.equals("Global")){
 				rs = conn.createStatement().executeQuery("SELECT * FROM trade WHERE ElementName = '"+selectionString+"' AND YEAR = '"+year+"' AND ItemName = '"+seed+"'");
 			} else {
@@ -51,14 +53,16 @@ public class ImportTrade implements Serializable {
 				tmpArray.add(rs.getString(13));
 				dataArray.add(tmpArray);	
 			}
-		conn.close();
+			
+			// close db connection to reduce db load
+			conn.close();
 		} catch (Exception e) {
 			System.out.println("ERROR:");
 			System.out.println(e.toString());
 		}
-		System.out.println("****LOADED TRADE ****");
 	}
 
+	// returns stored sql data of this object
 	public ArrayList getRawData() {
 		return dataArray;
 	}
