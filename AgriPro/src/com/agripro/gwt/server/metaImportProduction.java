@@ -14,7 +14,7 @@ public class metaImportProduction implements Serializable {
 	private ArrayList dataArray = new ArrayList();
 
 	// fills dataArray with meta data for production based on year and country
-	public metaImportProduction(String year, String country) {		
+	public metaImportProduction(String year, String country) {	
 		try{
 			// create db connection
 			Class.forName("com.mysql.jdbc.GoogleDriver");

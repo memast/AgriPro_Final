@@ -341,7 +341,7 @@ public class AgriPro extends Visualisation implements EntryPoint {
 	}	
 	
 
-	// Callback funciton for meta & data requests
+	// Callback function for meta & data requests
 	private class DataCallBack implements AsyncCallback<Data> {
 		@Override
 		public void onFailure(Throwable caught) {
